@@ -1,0 +1,46 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "stage": {
+            "type": "string",
+            "allowedValues": ["SE","QC","DEV"]
+        },
+        "storage": {
+            "type": "string",
+            "allowedValues": ["Standard_LRS","Standard_GRS"]
+        },
+        "Location": {
+            "type": "string",
+            "defaultValue": "westeroupe"
+        }
+    },
+    "functions": [],
+    "variables": {
+        "name": {
+            "type":"string",
+            "defaultValue":"[concat(resourceGroup().id, parameters('stage'))]"
+        }
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Storage/storageAccounts",
+            "apiVersion": "2019-04-01",
+            "kind": "StorageV2",
+            "name": "[variables('name')]",
+            "location":"[parameters('Location')]",
+            "sku": {
+                "name":"[parameters('storage')]"
+            }
+        },
+		
+        {
+            "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
+            "apiVersion": "2019-06-01",
+            "name":"[concat(variables('name'),'/default/New')]",
+            "dependsOn": [
+                "[variables('name')]"
+            ]
+        },
+    "outputs": {}
+}

@@ -1,0 +1,185 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "StorageSku": {
+      "type": "string",
+      "allowedValues": ["Standard_LRS", "Standard_GRS"],
+      "defaultValue": "Standard_LRS"
+    },
+    "VMName": {
+      "type": "string"
+    },
+    "adminUsername": {
+      "type": "string"
+    },
+    "adminpassword": {
+      "type": "securestring"
+    }
+  },
+  "functions": [],
+  "variables": {
+    "StorageName": "[uniqueString(resourceGroup().id)]"
+  },
+  "resources": [
+    {
+      "name": "[toLower(variables('storageName'))]",
+      "type": "Microsoft.Storage/storageAccounts",
+      "apiVersion": "2019-06-01",
+      "location": "[resourceGroup().location]",
+      "tags": {
+        "displayName": "[concat(parameters('VMName'),'-','Storage Account')]"
+      },
+      "sku": {
+        "name": "[parameters('StorageSku')]"
+      },
+      "kind": "Storage"
+    },
+    {
+      "name": "[concat(parameters('VMName'),'-PublicIP')]",
+      "type": "Microsoft.Network/publicIPAddresses",
+      "apiVersion": "2019-11-01",
+      "location": "[resourceGroup().location]",
+      "tags": {
+        "displayName": "[concat(parameters('VMName'),'-PublicIP')]"
+      },
+      "properties": {
+        "publicIPAllocationMethod": "Dynamic",
+        "dnsSettings": {
+          "domainNameLabel": "[toLower(parameters('VMName'))]"
+        }
+      }
+    },
+    {
+      "name": "[concat(parameters('VMName'),'-ns')]",
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "apiVersion": "2018-08-01",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "securityRules": [
+          {
+            "name": "[concat(parameters('VMName'),'-nsgRule')]",
+            "properties": {
+              "description": "description",
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "3389",
+              "sourceAddressPrefix": "*",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 100,
+              "direction": "Inbound"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "[concat(parameters('VMName'),'-VirtualNetwork')]",
+      "type": "Microsoft.Network/virtualNetworks",
+      "apiVersion": "2019-11-01",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/networkSecurityGroups', concat(parameters('VMName'),'-ns'))]"
+      ],
+      "tags": {
+        "displayName": "[concat(parameters('VMName'),'-VirtualNetwork')]"
+      },
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": ["10.0.0.0/16"]
+        },
+        "subnets": [
+          {
+            "name": "[concat(parameters('VMName'),'-VirtualNetwork-Subnet')]",
+            "properties": {
+              "addressPrefix": "10.0.0.0/24",
+              "networkSecurityGroup": {
+                "id": "[resourceId('Microsoft.Network/networkSecurityGroups',concat(parameters('VMName'),'-ns'))]"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "[concat(parameters('VMName'),'-NIC')]",
+      "type": "Microsoft.Network/networkInterfaces",
+      "apiVersion": "2019-11-01",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/publicIPAddresses', concat(parameters('VMName'),'-PublicIP'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks', concat(parameters('VMName'),'-VirtualNetwork'))]"
+      ],
+      "tags": {
+        "displayName": "[concat(parameters('VMName'),'-NIC')]"
+      },
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "ipConfig1",
+            "properties": {
+              "privateIPAllocationMethod": "Dynamic",
+              "publicIPAddress": {
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses', concat(parameters('VMName'),'-PublicIP'))]"
+              },
+              "subnet": {
+                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets',concat(parameters('VMName'),'-VirtualNetwork'),concat(parameters('VMName'),'-VirtualNetwork-Subnet'))]"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "[parameters('VMName')]",
+      "type": "Microsoft.Compute/virtualMachines",
+      "apiVersion": "2019-07-01",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts', toLower(variables('storageName')))]",
+        "[resourceId('Microsoft.Network/networkInterfaces', concat(parameters('VMName'),'-NIC'))]"
+      ],
+      "tags": {
+        "displayName": "[parameters('VMName')]"
+      },
+      "properties": {
+        "hardwareProfile": {
+          "vmSize": "Standard_A2_v2"
+        },
+        "osProfile": {
+          "computerName": "[parameters('VMName')]",
+          "adminUsername": "[parameters('adminUsername')]",
+          "adminPassword": "[parameters('adminpassword')]"
+        },
+        "storageProfile": {
+          "imageReference": {
+            "publisher": "MicrosoftWindowsServer",
+            "offer": "WindowsServer",
+            "sku": "2012-R2-Datacenter",
+            "version": "latest"
+          },
+          "osDisk": {
+            "name": "[concat(parameters('VMName'),'-Disk')]",
+            "caching": "ReadWrite",
+            "createOption": "FromImage"
+          }
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[resourceId('Microsoft.Network/networkInterfaces', concat(parameters('VMName'),'-NIC'))]"
+            }
+          ]
+        },
+        "diagnosticsProfile": {
+          "bootDiagnostics": {
+            "enabled": true,
+            "storageUri": "[reference(resourceId('Microsoft.Storage/storageAccounts/', toLower(variables('storageName')))).primaryEndpoints.blob]"
+          }
+        }
+      }
+    }
+  ],
+  "outputs": {}
+}

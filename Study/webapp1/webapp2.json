@@ -1,0 +1,64 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "appserviceplanname": {
+            "type": "string"
+        },
+        "Department": {
+            "type": "string"
+        },
+        "WebSiteName": {
+            "type": "string"
+        },
+        "websitecount": {
+            "type": "array",
+            "defaultValue": [
+                "SE","DEV","QC"
+            ]
+        }
+    },
+    "functions": [],
+    "variables": {
+        "Location":"[resourceGroup().location]"
+    },
+    "resources": [
+     {
+         "name": "[parameters('appserviceplanname')]",
+         "type": "Microsoft.Web/serverfarms",
+         "apiVersion": "2018-02-01",
+         "location": "[variables('Location')]",
+         "sku": {
+             "name": "F1",
+             "capacity": 1
+         },
+         "tags": {
+             "displayName": "[parameters('Department')]"
+         },
+         "properties": {
+             "name": "[parameters('appserviceplanname')]"
+         },
+         "dependsOn": [
+             "websitenames"
+         ]
+     },
+     {
+         "name": "[concat(parameters('WebSiteName'),parameters('websitecount')[copyIndex('websitenames')])]",
+         "type": "Microsoft.Web/sites",
+         "apiVersion": "2018-11-01",
+         "location": "[variables('Location')]",
+         "dependsOn": [
+             "[resourceId('Microsoft.Web/serverfarms',parameters('appserviceplanname'))]"
+         ],
+         "properties": {
+             "name": "[concat(parameters('WebSiteName'),parameters('websitecount')[copyIndex('websitenames')])]",
+             "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('appserviceplanname'))]"
+         },
+         "copy": {
+             "name":"websitenames",
+             "count":"[length(parameters('websitecount'))]"
+         },""
+     }
+    ],
+    "outputs": {}
+}

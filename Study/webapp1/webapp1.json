@@ -1,0 +1,88 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "webappplan": {
+            "type": "string"
+        },
+        "websitename": {
+            "type": "string"
+        },
+        "StorageAccontname": {
+            "type": "string"
+        },
+        "Containername": {
+            "type": "string"
+        }
+    },
+    "functions": [],
+    "variables": {
+        "Location":"[resourceGroup().location]"
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Storage/storageAccounts",
+            "apiVersion": "2019-06-01",
+            "name": "[parameters('StorageAccontname')]",
+            "location":"[variables('Location')]",
+            "sku": {
+                "name": "Standard_LRS"
+            },
+            "resources": [
+                {
+                    "type": "blobServices/containers",
+                    "apiVersion": "2019-06-01",
+                    "name":"[concat('/default/',parameters('Containername'))]",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Storage/storageAccounts', parameters('StorageAccontname'))]"
+                                 ]
+                }
+            ]
+        },
+        {
+            "type": "Microsoft.Web/serverfarms",
+            "apiVersion": "2018-02-01",
+            "location":"[variables('Location')]",
+            "name":"[parameters('webappplan')]",
+            "sku": {
+                "name": "B1"
+            }
+                
+        
+        },
+        {
+            "type": "Microsoft.Web/sites",
+            "apiVersion": "2018-11-01",
+            "location":"[variables('Location')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/serverfarms', parameters('webappplan'))]",
+                "[resourceId('Microsoft.Insights/components', parameters('websitename'))]"
+            ],
+            "name":"[parameters('websitename')]",
+            "properties": {
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms',parameters('webappplan'))]",
+                "siteConfig": {
+                    "metadata":[
+                        {
+                             "name": "CURRENT_STACK",
+                            "value": "dotnetcore"
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Insights/components",
+            "apiVersion": "2018-05-01-preview",
+            "Name": "[parameters('websitename')]",
+            "location":"[variables('Location')]",
+            "properties": {
+                "ApplicationId": "[parameters('webappplan')]",
+                "Request_Source": "IbizaWebAppExtensionCreate",
+                "Flow_Type": "Redfield",
+                "Application_Type": "web"
+            }
+        }
+    ],
+    "outputs": {}
+}
