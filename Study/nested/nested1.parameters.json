@@ -1,0 +1,30 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "VN-Name": {
+            "value": "asfdevopsvn" 
+        },
+        "NIC-Name": {
+            "value": "asfdevopsnic" 
+        },
+        "VM-NSG": {
+            "value": "asfdevopsnsg" 
+        },
+        "Public-IP": {
+            "value": "asfdevopspip"
+        },
+        "VM-Name": {
+            "value": "asfdevopsvm"
+        },
+        "computerName": {
+            "value": "asfdevops"
+        },
+        "adminUsername": {
+            "value": "ipm-admin"
+        },
+        "adminPassword": {
+            "value": "!PM@giXxx @2021"
+        }
+    }
+}

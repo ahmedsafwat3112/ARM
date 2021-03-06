@@ -84,11 +84,14 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "https://github.com/ahmedsafwat3112/ARM/blob/master/Study/nested/NIC.json"
+          "uri": "https://raw.githubusercontent.com/ahmedsafwat3112/ARM/master/Study/nested/NIC.json"
         },
         "parameters": {
           "NIC-Name": {
             "Value": "[parameters('NIC-Name')]"
+          },
+          "VN-Name": {
+            "Value": "[parameters('VN-Name')]"
           },
           "VNetID": {
             "Value": "[reference('VNET-Template').outputs.VNetID.value]"

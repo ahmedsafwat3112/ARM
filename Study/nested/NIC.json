@@ -10,6 +10,9 @@
         },
         "PIPID": {
             "type": "string"
+        },
+        "VN-Name": {
+            "type": "string"
         }
     },
     "functions": [],
@@ -31,7 +34,7 @@
                         "properties": {
                             "privateIPAllocationMethod": "Dynamic",
                             "subnet": {
-                                "id": "[concat(parameters('VNetID'), 'Subnet-1')]"
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('VN-Name'), 'Subnet-1')]"
                             },
                             "publicIPAddress": {
                                 "id": "[parameters('PIPID')]"
