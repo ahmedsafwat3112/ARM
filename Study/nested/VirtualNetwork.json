@@ -50,7 +50,7 @@
     "outputs": {
         "VNetID": {
             "type": "string",
-            "value": "[parameters('VN-Name')]"
+            "value": "[resourceId('Microsoft.Network/virtualNetworks',parameters('VN-Name'))]"
         }
     }
 }
