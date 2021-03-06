@@ -152,6 +152,9 @@
           },
           "StorageID": {
             "Value": "[reference('Storage-Template').outputs.StorageID.value]"
+          },
+           "Storagename": {
+            "Value": "[parameters('StorageName')]"
           }
         }
       }

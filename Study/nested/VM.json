@@ -19,6 +19,9 @@
     },
     "Storageid": {
       "type": "string"
+    },
+    "storagename": {
+      "type": "string"
     }
   },
   "functions": [],
