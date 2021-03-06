@@ -4,6 +4,9 @@
     "parameters": {
         "VN-Name": {
             "type": "string"
+        },
+        "NSGID": {
+            "type": "string"
         }
     },
     "functions": [],

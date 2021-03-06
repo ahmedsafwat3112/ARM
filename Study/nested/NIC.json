@@ -4,6 +4,12 @@
     "parameters": {
         "NIC-Name": {
             "type": "string"
+        },
+        "VNetID": {
+            "type": "string"
+        },
+        "PIPID": {
+            "type": "string"
         }
     },
     "functions": [],

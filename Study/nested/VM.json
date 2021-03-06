@@ -13,10 +13,14 @@
         },
         "adminPassword": {
             "type": "securestring"
+        },
+        "NICID": {
+            "type": "string"
         }
     },
     "functions": [],
     "variables": {
+        "storagename":""
     },
     "resources": [
         {
