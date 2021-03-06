@@ -64,7 +64,7 @@
         },
         "diagnosticsProfile": {
           "bootDiagnostics": {
-            "enabled": true,
+            "enabled": false,
             "storageUri": "[reference(parameters('Storageid')).primaryEndpoints.blob]"
           }
         }

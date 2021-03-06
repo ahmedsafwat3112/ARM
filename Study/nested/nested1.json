@@ -132,7 +132,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "https://raw.githubusercontent.com/ahmedsafwat3112/ARM/master/Study/nested/VM2.json"
+          "uri": "https://raw.githubusercontent.com/ahmedsafwat3112/ARM/master/Study/nested/VM.json"
         },
         "parameters": {
           "VM-Name": {
@@ -151,7 +151,7 @@
             "Value": "[reference('NIC-Template').outputs.NICID.value]"
           },
           "StorageID": {
-            "Value": "[reference('NIC-Template').outputs.StorageID.value]"
+            "Value": "[reference('Storage-Template').outputs.StorageID.value]"
           }
         }
       }
