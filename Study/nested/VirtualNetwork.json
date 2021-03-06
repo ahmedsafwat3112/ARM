@@ -41,14 +41,11 @@
                         }
                     }
                 ]
-            },
-            "dependsOn": [
-                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('VM-NSG'))]"
-            ]
+            }
         }
     ],
     "outputs": {
-        "VNet-ID": {
+        "VNetID": {
             "type": "string",
             "value": "[resourceId('Microsoft.Network/virtualNetworks',parameters('VN-Name'))]"
         }

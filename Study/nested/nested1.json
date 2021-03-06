@@ -1,23 +1,151 @@
 {
-    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-    "contentVersion": "1.0.0.0",
-    "parameters": {},
-    "functions": [],
-    "variables": {},
-    "resources": [
-        {
-            "name": "StorageTemplate",
-            "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2020-06-01",
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "https://github.com/ahmedsafwat3112/ARM/blob/master/Study/nested/Storage.json"
-                },
-                "parameters": {
-                }
-            }
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "VN-Name": {
+      "type": "string"
+    },
+    "NIC-Name": {
+      "type": "string"
+    },
+    "VM-NSG": {
+      "type": "string"
+    },
+    "Public-IP": {
+      "type": "string"
+    },
+    "VM-Name": {
+      "type": "string"
+    },
+    "computerName": {
+      "type": "string"
+    },
+    "adminUsername": {
+      "type": "string"
+    },
+    "adminPassword": {
+      "type": "securestring"
+    }
+  },
+  "functions": [],
+  "variables": {},
+  "resources": [
+    {
+      "name": "Storage-Template",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2020-06-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "https://raw.githubusercontent.com/ahmedsafwat3112/ARM/master/Study/nested/Storage.json"
+        },
+        "parameters": {}
+      }
+    },
+    {
+      "name": "VNET-Template",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2020-06-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "https://raw.githubusercontent.com/ahmedsafwat3112/ARM/master/Study/nested/VirtualNetwork.json"
+        },
+        "parameters": {
+          "VN-Name": {
+            "Value": "[parameters('VN-Name')]"
+          },
+          "VM-NSG": {
+            "value": "[reference('NSG-Template').outputs.NSGID.value]"
+          }
         }
-    ],
-    "outputs": {}
+      }
+    },
+    {
+      "name": "NSG-Template",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2020-06-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "https://raw.githubusercontent.com/ahmedsafwat3112/ARM/master/Study/nested/NSG.json"
+        },
+        "parameters": {
+          "VM-NSG": {
+            "Value": "[parameters('VM-NSG')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "NIC-Template",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2020-06-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "https://github.com/ahmedsafwat3112/ARM/blob/master/Study/nested/NIC.json"
+        },
+        "parameters": {
+          "NIC-Name": {
+            "Value": "[parameters('NIC-Name')]"
+          },
+          "VN-Name": {
+            "Value": "[reference('VNET-Template').outputs.VNetID.value]"
+          },
+          "Public-IP": {
+            "Value": "[reference('PIP-Template').outputs.PIPID.value]"
+          }
+        }
+      }
+    },
+    {
+      "name": "PIP-Template",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2020-06-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "https://raw.githubusercontent.com/ahmedsafwat3112/ARM/master/Study/nested/PIP.json"
+        },
+        "parameters": {
+          "Public-IP": {
+            "Value": "[parameters('Public-IP')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "VM-Template",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2020-06-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "https://raw.githubusercontent.com/ahmedsafwat3112/ARM/master/Study/nested/VM.json"
+        },
+        "parameters": {
+          "VM-Name": {
+            "Value": "[parameters('VM-Name')]"
+          },
+          "VM-computerName": {
+            "Value": "[parameters('computerName')]"
+          },
+          "adminUsername": {
+            "Value": "[parameters('adminUsername')]"
+          },
+          "adminPassword": {
+            "Value": "[parameters('adminPassword')]"
+          },
+          "NIC-Name": {
+            "Value": "[reference('NIC-Template').outputs.NICID.value]"
+          }
+        },
+        "variables": {
+          "storagename": "[reference('Storage-Template').outputs.StorageID.value]"
+        }
+      }
+    }
+  ],
+  "outputs": {}
 }

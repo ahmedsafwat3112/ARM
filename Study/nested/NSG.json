@@ -50,7 +50,7 @@
         }
     ],
     "outputs": {
-        "NSG-ID": {
+        "NSGID": {
             "type": "string",
             "value": "[resourceId('Microsoft.Network/networkSecurityGroups',parameters('VM-NSG'))]"
         }

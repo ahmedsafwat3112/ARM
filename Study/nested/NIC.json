@@ -18,10 +18,6 @@
             "tags": {
                 "displayName": "[parameters('NIC-Name')]"
             },
-            "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualNetworks',parameters('VN-Name'))]",
-                "[resourceId('Microsoft.Network/publicIPAddresses', parameters('Public-IP'))]"
-            ],
             "properties": {
                 "ipConfigurations": [
                     {
@@ -41,7 +37,7 @@
         }
     ],
     "outputs": {
-        "NIC-ID": {
+        "NICID": {
             "type": "string",
             "value": "[resourceId('Microsoft.Network/networkInterfaces', parameters('NIC-Name'))]"
         }

@@ -24,7 +24,7 @@
         }
     ],
     "outputs": {
-        "PIP-ID": {
+        "PIPID": {
             "type": "string",
             "value": "[resourceId('Microsoft.Network/publicIPAddresses',parameters('Public-IP'))]"
         }
