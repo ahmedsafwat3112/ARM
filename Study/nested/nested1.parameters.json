@@ -5,6 +5,9 @@
         "VN-Name": {
             "value": "asfdevopsvn" 
         },
+        "StorageName": {
+            "value": "asfdevopsvn" 
+        },
         "NIC-Name": {
             "value": "asfdevopsnic" 
         },
