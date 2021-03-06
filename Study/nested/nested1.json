@@ -131,7 +131,7 @@
           "VM-Name": {
             "Value": "[parameters('VM-Name')]"
           },
-          "VM-computerName": {
+          "computerName": {
             "Value": "[parameters('computerName')]"
           },
           "adminUsername": {
