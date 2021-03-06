@@ -55,7 +55,7 @@
           "VN-Name": {
             "Value": "[parameters('VN-Name')]"
           },
-          "VM-NSG": {
+          "NSGID": {
             "value": "[reference('NSG-Template').outputs.NSGID.value]"
           }
         }
@@ -90,10 +90,10 @@
           "NIC-Name": {
             "Value": "[parameters('NIC-Name')]"
           },
-          "VN-Name": {
+          "VNetID": {
             "Value": "[reference('VNET-Template').outputs.VNetID.value]"
           },
-          "Public-IP": {
+          "PIPID": {
             "Value": "[reference('PIP-Template').outputs.PIPID.value]"
           }
         }
@@ -137,7 +137,7 @@
           "adminPassword": {
             "Value": "[parameters('adminPassword')]"
           },
-          "NIC-Name": {
+          "NICID": {
             "Value": "[reference('NIC-Template').outputs.NICID.value]"
           }
         },

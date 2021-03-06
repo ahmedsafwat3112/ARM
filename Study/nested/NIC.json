@@ -25,10 +25,10 @@
                         "properties": {
                             "privateIPAllocationMethod": "Dynamic",
                             "subnet": {
-                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('VN-Name'), 'Subnet-1')]"
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('VNetID'), 'Subnet-1')]"
                             },
                             "publicIPAddress": {
-                                "id": "[resourceId('Microsoft.Network/publicIPAddresses',parameters('Public-IP'))]"
+                                "id": "[resourceId('Microsoft.Network/publicIPAddresses',parameters('PIPID'))]"
                             }
                         }
                     }

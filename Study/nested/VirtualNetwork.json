@@ -30,7 +30,7 @@
                         "properties": {
                             "addressPrefix": "10.0.0.0/24",
                             "networkSecurityGroup": {
-                                "id": "[resourceId('Microsoft.Network/networkSecurityGroups',parameters('VM-NSG'))]"
+                                "id": "[resourceId('Microsoft.Network/networkSecurityGroups',parameters('NSGID'))]"
                             }
                         }
                     },
