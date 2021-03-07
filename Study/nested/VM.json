@@ -17,10 +17,7 @@
     "NICID": {
       "type": "string"
     },
-    "Storageid": {
-      "type": "string"
-    },
-    "storagename": {
+    "StorageURI": {
       "type": "string"
     }
   },
@@ -67,8 +64,8 @@
         },
         "diagnosticsProfile": {
           "bootDiagnostics": {
-            "enabled": false,
-            "storageUri": "[reference(parameters('Storageid')).primaryEndpoints.blob]"
+            "enabled": true,
+            "storageUri": "[parameters('StorageURI')]"
           }
         }
       }

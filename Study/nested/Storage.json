@@ -26,9 +26,9 @@
         }
     ],
     "outputs": {
-        "StorageID": {
+        "StorageURI": {
             "type": "string",
-            "value":"[resourceId('Microsoft.Storage/storageAccounts',parameters('storagename'))]"
+            "value": "[reference(resourceId('Microsoft.Storage/storageAccounts', parameters('storagename'))).primaryEndpoints.blob]"
         }
     }
 }

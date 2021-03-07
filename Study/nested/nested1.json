@@ -150,11 +150,8 @@
           "NICID": {
             "Value": "[reference('NIC-Template').outputs.NICID.value]"
           },
-          "StorageID": {
-            "Value": "[reference('Storage-Template').outputs.StorageID.value]"
-          },
-           "Storagename": {
-            "Value": "[parameters('StorageName')]"
+          "StorageURI": {
+            "Value": "[reference('Storage-Template').outputs.StorageURI.value]"
           }
         }
       }
